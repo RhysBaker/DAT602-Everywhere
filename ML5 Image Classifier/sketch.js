@@ -1,24 +1,24 @@
 let classifier;
-
-let img;
-
-function preload() {
-    classifier = ml5.imageClassifier('MobileNet');
-    img = loadImage('images/cat.png');
-}
+let video;
+let resuiltsP;
 
 function setup() {
-    createCanvas(600, 600);
-    classifier.classify(img, gotResult);
-    image(img, 0, 0);
+    noCanvas();
+    video = createCapture(VIDEO);
+    classifier = ml5.imageClassifier("MobileNet", video, modelReady);
+    resultsP = createP("Loading model and video");
 }
 
-function gotResult(error, results) {
-    if (error) {
-        console.error(error);
-    } else {
-        console.log(results);
-        createDiv('Label: ' + results[0].label);
-        createDiv('Confidence: ' + nf(results[0].confidence, 0, 2));
-    }
+function modelReady() {
+    console.log("Model Ready");
+    classifyVideo();
+}
+
+function classifyVideo() {
+    classifier.classify(gotResults);
+}
+
+function gotResults(err, results) {
+    resultsP.html(results[0].label + " " + nf(results[0].confidence, 0, 2));
+    classifyVideo();
 }
