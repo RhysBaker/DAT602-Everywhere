@@ -14,29 +14,33 @@ function setup() {
   
   classifier = featureExtractor.classification(video);
   
-  let btn1 = createButton('phone');
+  let btn1 = createButton('rhys');
   btn1.mousePressed(function() {
-    console.log('adding phone example');
-    classifier.addImage('phone');
+    console.log('adding rhys example');
+    classifier.addImage('rhys');
   });
   
-  let btn2 = createButton('wallet');
+  let btn2 = createButton('black');
   btn2.mousePressed(function(){
-    console.log('adding wallet example');
-    classifier.addImage('wallet');
+    console.log('adding black example');
+    classifier.addImage('black');
   });
 
   let trainBtn = createButton('TRAIN');
   trainBtn.mousePressed(function () {
     console.log('Beginning training...')
     classifier.train(whileTraining);
-  });
-                    
+  });                
 }
 
 
 function whileTraining(loss) {
-console.log(loss);
+  if (loss) {
+    console.log(loss);
+  } else {
+    //finish training
+    classifier.classify(gotResult);
+  }
 }
 
 function modelReady() {
@@ -46,9 +50,8 @@ function modelReady() {
 function gotResult(err, results) {
   // console.log(results);
   
-  elt.html(results[0].label);
-  
-  classifier.predict(gotResult);
+  elt.html(results[0].label + " " + nf(results[0].confidence, 0, 2));  
+  classifier.classify(gotResult);
 }
 
 function draw() {
